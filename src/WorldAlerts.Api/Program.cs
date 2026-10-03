@@ -2,6 +2,9 @@ using Microsoft.OpenApi.Models;
 using Microsoft.EntityFrameworkCore;
 using WorldAlerts.Core.Alerts;
 using WorldAlerts.Infrastructure.Persistence;
+using WorldAlerts.Core.Events;
+using WorldAlerts.Core.Notifications;
+using WorldAlerts.Infrastructure.Notifications;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,6 +25,10 @@ builder.Services.AddDbContext<AlertsDbContext>(options =>
         builder.Configuration.GetConnectionString("WorldAlerts")));
 
 builder.Services.AddScoped<IAlertRepository, AlertRepository>();
+builder.Services.AddSingleton<AlertMatcher>();
+builder.Services.AddScoped<EventProcessingService>();
+builder.Services.AddScoped<INotificationChannel, EmailNotificationChannel>();
+builder.Services.AddScoped<INotificationChannel, SlackNotificationChannel>();
 
 var app = builder.Build();
 

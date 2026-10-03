@@ -20,4 +20,7 @@ public interface IAlertRepository
     Task DeleteAsync(
         Alert alert,
         CancellationToken cancellationToken);
+
+    Task<IReadOnlyCollection<Alert>> GetEnabledAsync(
+        CancellationToken cancellationToken);        
 }

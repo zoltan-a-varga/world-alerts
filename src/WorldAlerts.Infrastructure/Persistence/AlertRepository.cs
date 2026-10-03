@@ -51,4 +51,13 @@ public sealed class AlertRepository : IAlertRepository
         _dbContext.Alerts.Remove(alert);
         await _dbContext.SaveChangesAsync(cancellationToken);
     }
+
+    public async Task<IReadOnlyCollection<Alert>> GetEnabledAsync(
+        CancellationToken cancellationToken)
+    {
+        return await _dbContext.Alerts
+            .AsNoTracking()
+            .Where(x => x.Enabled)
+            .ToListAsync(cancellationToken);
+    }    
 }
