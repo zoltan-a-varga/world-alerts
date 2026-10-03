@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WorldAlerts.Infrastructure.Persistence;
 
@@ -10,9 +11,11 @@ using WorldAlerts.Infrastructure.Persistence;
 namespace WorldAlerts.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(AlertsDbContext))]
-    partial class AlertsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20261003014313_AddNotificationAttempts")]
+    partial class AddNotificationAttempts
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.21");

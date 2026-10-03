@@ -10,14 +10,19 @@ public sealed class EventProcessingService
     private readonly IReadOnlyDictionary<
         Common.NotificationChannelType,
         INotificationChannel> _notificationChannels;
+        
+    private readonly INotificationAttemptRepository
+        _notificationAttemptRepository;        
 
     public EventProcessingService(
         IAlertRepository alertRepository,
         AlertMatcher alertMatcher,
-        IEnumerable<INotificationChannel> notificationChannels)
+        IEnumerable<INotificationChannel> notificationChannels,
+        INotificationAttemptRepository notificationAttemptRepository)
     {
         _alertRepository = alertRepository;
         _alertMatcher = alertMatcher;
+        _notificationAttemptRepository = notificationAttemptRepository;
 
         _notificationChannels = notificationChannels
             .ToDictionary(x => x.Type);
@@ -62,6 +67,16 @@ public sealed class EventProcessingService
                 await channel.SendAsync(
                     notification,
                     cancellationToken);
+
+                await _notificationAttemptRepository.AddAsync(
+                    new NotificationAttempt
+                    {
+                        AlertId = alert.Id,
+                        EventId = worldEvent.Id,
+                        UserId = alert.UserId,
+                        Channel = channelType
+                    },
+                    cancellationToken);                    
 
                 notificationCount++;
             }

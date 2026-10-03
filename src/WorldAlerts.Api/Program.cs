@@ -29,7 +29,7 @@ builder.Services.AddSingleton<AlertMatcher>();
 builder.Services.AddScoped<EventProcessingService>();
 builder.Services.AddScoped<INotificationChannel, EmailNotificationChannel>();
 builder.Services.AddScoped<INotificationChannel, SlackNotificationChannel>();
-
+builder.Services.AddScoped<INotificationAttemptRepository, NotificationAttemptRepository>();
 var app = builder.Build();
 
 app.UseSwagger();

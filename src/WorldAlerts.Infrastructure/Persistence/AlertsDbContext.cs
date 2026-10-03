@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using WorldAlerts.Core.Alerts;
 using WorldAlerts.Core.Common;
+using WorldAlerts.Core.Notifications;
 
 namespace WorldAlerts.Infrastructure.Persistence;
 
@@ -12,6 +13,7 @@ public sealed class AlertsDbContext : DbContext
     }
 
     public DbSet<Alert> Alerts => Set<Alert>();
+    public DbSet<NotificationAttempt> NotificationAttempts => Set<NotificationAttempt>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -40,5 +42,17 @@ public sealed class AlertsDbContext : DbContext
                     .Split(',', StringSplitOptions.RemoveEmptyEntries)
                     .Select(x => (NotificationChannelType)int.Parse(x))
                     .ToArray());
+
+        var notificationAttempt =
+            modelBuilder.Entity<NotificationAttempt>();
+
+        notificationAttempt.HasKey(x => x.Id);
+
+        notificationAttempt.Property(x => x.UserId)
+            .IsRequired()
+            .HasMaxLength(100);
+
+        notificationAttempt.Property(x => x.Channel)
+            .IsRequired();                    
     }
 }

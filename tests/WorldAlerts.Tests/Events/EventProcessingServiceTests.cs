@@ -20,11 +20,13 @@ public sealed class EventProcessingServiceTests
 
         var email = new FakeNotificationChannel(NotificationChannelType.Email);
         var slack = new FakeNotificationChannel(NotificationChannelType.Slack);
+        var attempts = new FakeNotificationAttemptRepository();
 
         var sut = new EventProcessingService(
             repository,
             new AlertMatcher(),
-            [email, slack]);
+            [email, slack],
+            attempts);
 
         var worldEvent = CreateEvent(
             EventCategory.NaturalDisaster,
@@ -35,6 +37,7 @@ public sealed class EventProcessingServiceTests
             CancellationToken.None);
 
         Assert.Equal(2, count);
+        Assert.Equal(2, attempts.Attempts.Count);
         Assert.Single(email.SentNotifications);
         Assert.Single(slack.SentNotifications);
     }
@@ -49,11 +52,13 @@ public sealed class EventProcessingServiceTests
 
         var repository = new FakeAlertRepository([alert]);
         var email = new FakeNotificationChannel(NotificationChannelType.Email);
+        var attempts = new FakeNotificationAttemptRepository();
 
         var sut = new EventProcessingService(
             repository,
             new AlertMatcher(),
-            [email]);
+            [email],
+            attempts);
 
         var worldEvent = CreateEvent(
             EventCategory.NaturalDisaster,
@@ -64,6 +69,7 @@ public sealed class EventProcessingServiceTests
             CancellationToken.None);
 
         Assert.Equal(0, count);
+        Assert.Empty(attempts.Attempts);
         Assert.Empty(email.SentNotifications);
     }
 
