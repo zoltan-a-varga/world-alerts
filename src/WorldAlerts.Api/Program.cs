@@ -1,17 +1,41 @@
+using Microsoft.OpenApi.Models;
+using Microsoft.EntityFrameworkCore;
+using WorldAlerts.Core.Alerts;
+using WorldAlerts.Infrastructure.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddControllers();
+
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "World Alerts API",
+        Version = "v1"
+    });
+});
+
+builder.Services.AddDbContext<AlertsDbContext>(options =>
+    options.UseSqlite(
+        builder.Configuration.GetConnectionString("WorldAlerts")));
+
+builder.Services.AddScoped<IAlertRepository, AlertRepository>();
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
+app.UseSwagger();
+
+app.UseSwaggerUI(options =>
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+    options.SwaggerEndpoint(
+        "/swagger/v1/swagger.json",
+        "World Alerts API v1");
+});
 
 app.UseHttpsRedirection();
+
+app.MapControllers();
 
 app.Run();

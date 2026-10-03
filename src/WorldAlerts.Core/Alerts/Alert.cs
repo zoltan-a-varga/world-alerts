@@ -8,14 +8,14 @@ public sealed class Alert
 
     public required string UserId { get; init; }
 
-    public required string Name { get; init; }
+    public required string Name { get; set; }
 
-    public EventCategory EventCategory { get; init; }
+    public EventCategory EventCategory { get; set; }
 
-    public EventSeverity MinimumSeverity { get; init; }
+    public EventSeverity MinimumSeverity { get; set; }
 
     public bool Enabled { get; set; } = true;
 
-    public IReadOnlyCollection<NotificationChannelType> NotificationChannels { get; init; }
+    public IReadOnlyCollection<NotificationChannelType> NotificationChannels { get; set; }
         = Array.Empty<NotificationChannelType>();
 }
